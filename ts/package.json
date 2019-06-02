@@ -1,0 +1,29 @@
+{
+  "name": "gympass.interview-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "start-race": "node lib/index.js -l samples/racelogs.txt -c 4"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT", 
+  "dependencies": {
+    "minimist": "1.2.0",
+    "chai": "4.2.0",
+    "mocha": "5.2.0",
+    "moment": "2.23.0",
+    "reflect-metadata": "0.1.13",
+    "typedi": "0.8.0",
+    "commander": "2.19.0",
+    "line-reader": "0.4.0"
+  },
+  "devDependencies": {
+    "@types/chai": "4.1.7",
+    "@types/mocha": "5.2.6",
+    "@types/node": "10.11.5",
+    "ts-node": "8.0.2",
+    "typescript": "3.3.3333"
+  }
+}
