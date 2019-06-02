@@ -1,5 +1,5 @@
 import { ILapLog, IRaceRanking } from '../model';
-import { IMap, regexAll } from '../util';
+import { IMap, regexAll, leftPad } from '../util';
 import moment = require('moment');
 import { Service } from 'typedi';
 
@@ -17,7 +17,7 @@ export function serializeDuration(value: moment.Duration): string { return momen
 export function serializeNumber(value: number | string): string { return value.toString().replace('.', ','); }
 
 export function serializeLapLog(l: ILapLog): string { 
-    return `${serializeTime(l.time)}\t${'0' + l.pilot.id} – ${l.pilot.name}\t${l.lapNumber}\t${serializeDuration(l.lapTime)}\t${serializeNumber(l.avgSpeed)}`;
+    return `${serializeTime(l.time)}\t${l.pilot.id} – ${l.pilot.name}\t${l.lapNumber}\t${serializeDuration(l.lapTime)}\t${serializeNumber(l.avgSpeed)}`;
 }
 
 export function serializeRanking(r: IRaceRanking): string { 
@@ -48,7 +48,7 @@ export class LogParserService {
             lapLogs.push({
                 time: parseTime(matchedLog[1]),
                 pilot: {
-                    id: Number.parseInt(matchedLog[2]), 
+                    id: leftPad(Number.parseInt(matchedLog[2]).toFixed(0), 3), 
                     name: matchedLog[3]
                 },
                 lapNumber: Number.parseFloat(matchedLog[4]),

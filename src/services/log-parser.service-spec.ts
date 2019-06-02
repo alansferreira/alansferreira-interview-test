@@ -113,7 +113,7 @@ describe('Test #log-parser.service', () => {
                 lastLap: 1,
                 time: parseTime('23:49:12.667'),
                 pilot: {
-                    id: 22, 
+                    id: '022', 
                     name: 'pilot name'
                 },
                 position: 1,

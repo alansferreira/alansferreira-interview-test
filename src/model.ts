@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 
 export interface IPilot {
-    id: number;
+    id: string;
     name: string;
 }
 

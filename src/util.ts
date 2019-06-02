@@ -27,3 +27,7 @@ export function average(arr: number[]): number {
 export function elapsedDuration(startTime: moment.Moment, endTime: moment.Moment): moment.Duration {
     return moment.duration(endTime.diff(startTime));
 }
+
+export function leftPad(input: string, padLength: number, padValue?: string ) {
+    return (Array(padLength + 1).join(padValue || '0') + input).slice(-padLength);
+}
