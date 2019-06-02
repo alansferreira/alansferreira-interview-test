@@ -4,7 +4,10 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
-    "start-race": "node lib/index.js -l samples/racelogs.txt -c 4"
+    "build": "./node_modules/.bin/tsc -w false",
+    "start": "node lib/index.js -l samples/racelogs.txt -c 4",
+    "test": "node ./node_modules/mocha/bin/_mocha --require ts-node/register --timeout 999999 -u tdd --colors --recursive './{,!(node_modules)/}*/*-spec.ts' "
+
   },
   "keywords": [],
   "author": "",
