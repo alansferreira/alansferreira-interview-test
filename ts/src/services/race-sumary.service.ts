@@ -1,14 +1,16 @@
 import { ILapLog, IRaceRanking, IRaceOptions, IPilot } from '../model';
-import { IMap, regexAll, average } from '../util';
+import { IMap, regexAll, average, elapsedDuration } from '../util';
 import { Service, Inject } from 'typedi';
 import { LogParserService, serializeNumber, serializeDuration, serializeTime, serializeLapLog, serializeRanking } from './log-parser.service';
 import moment = require('moment');
 
-export class RaceSummaryService {
+export class Race {
     
     isFinished = false;
-    ranking: IRaceRanking[] = [];
+
     logs: ILapLog[] = [];
+
+    ranking: IRaceRanking[] = [];
     raceOptions: IRaceOptions = {laps: 4};
     
     pilotsMap: IMap<IPilot> = {};
@@ -28,7 +30,11 @@ export class RaceSummaryService {
     averageSpeed: IMap<number> = {};
 
     bestLap: ILapLog | null = null;
-    latecomers: IMap<moment.Duration> = {}
+
+    /**
+     * Descobrir quanto tempo cada piloto chegou após o vencedor
+     */
+    latecomersTime: IMap<moment.Duration> = {}
     
     constructor(
         @Inject(type => LogParserService) private logParserService: LogParserService
@@ -47,7 +53,7 @@ export class RaceSummaryService {
         this.pilotBestLap = {};
         this.averageSpeed = {};    
         this.bestLap =  null;
-        this.latecomers = {};
+        this.latecomersTime = {};
 
     }
 
@@ -80,7 +86,7 @@ export class RaceSummaryService {
         const pilotId = l.pilot.id;
         if(this.pilotsMap[pilotId]){
             const timeAmount = this.pilotsProofTime[pilotId];
-            this.pilotsProofTime[pilotId] = timeAmount.add(l.lapTime.asMilliseconds(), "milliseconds");
+            this.pilotsProofTime[pilotId] = timeAmount.add(l.lapTime);
             return ;
         } 
 
@@ -89,7 +95,7 @@ export class RaceSummaryService {
         this.pilotsMap[l.pilot.id] = pilot;
         this.pilotsArr.push(pilot);
         this.pilotsLogs[l.pilot.id] = [];
-        this.pilotsProofTime[l.pilot.id] = moment.duration(l.time.milliseconds());
+        this.pilotsProofTime[l.pilot.id] = l.lapTime;
     }
 
     measurePilotBestLap(l: ILapLog) {
@@ -117,11 +123,22 @@ export class RaceSummaryService {
         this.bestLap = {...l};
     }
     measureRanking(l: ILapLog) {
+        
+        if(this.isFinished){
+            const firstRankTime = this.ranking[0].time;
+            this.latecomersTime[l.pilot.id] = elapsedDuration(firstRankTime, l.time);
+            return ;        
+        }
+        
         if( l.lapNumber >= this.raceOptions.laps ) {
+            
+            this.isFinished = true;
+
             this.ranking.push({
                 position: this.ranking.length+1, 
                 pilot: l.pilot,
                 lastLap: l.lapNumber,
+                time: l.time,
                 proofTime: this.pilotsProofTime[l.pilot.id]
             });
         }
@@ -151,10 +168,13 @@ export class RaceSummaryService {
             summary.push(`\t${p.id} - ${p.name}: ` + serializeNumber(this.averageSpeed[p.id].toFixed(3))); 
         });
         
-        // summary.push(`Quanto tempo cada piloto chegou após o vencedor`);
-        // this.pilotsArr.map(p => { 
-        //     summary.push(`${p.id} - ${p.name}: ` + serializeDuration(this.latecomers[p.id])); 
-        // });
+        summary.push(`Quanto tempo cada piloto chegou após o vencedor`);
+        this.pilotsArr.map(p => { 
+            
+            if(!this.latecomersTime[p.id]) return;
+
+            summary.push(`\t${p.id} - ${p.name}: ` + serializeDuration(this.latecomersTime[p.id])); 
+        });
      
         return summary;
     }

@@ -1,6 +1,5 @@
 import * as moment from 'moment';
 
-
 export interface IPilot {
     id: number;
     name: string;
@@ -18,6 +17,7 @@ export interface IRaceRanking {
     position: number;
     pilot: IPilot;
     lastLap: number;
+    time: moment.Moment;
     proofTime?: moment.Duration;
 }
 

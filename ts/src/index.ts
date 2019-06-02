@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import Container from 'typedi';
 import * as fs from 'fs';
 import * as path from 'path';
-import { RaceSummaryService } from './services/race-sumary.service';
+import { Race } from './services/race-sumary.service';
 import * as program from 'commander';
 
 program
@@ -17,7 +17,7 @@ const _laps = (program.laps || 4);
 
 console.info(`Race log file: '${path.normalize(_logfile)}'`)
 
-const raceSumary = Container.get(RaceSummaryService);
+const raceSumary = Container.get(Race);
 const racelogs: string[] = fs.readFileSync(_logfile).toString().split('\n');
 
 raceSumary.startRace({laps: _laps});

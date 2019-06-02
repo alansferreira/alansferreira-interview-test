@@ -111,6 +111,7 @@ describe('Test #log-parser.service', () => {
         try {
             const r: IRaceRanking = {
                 lastLap: 1,
+                time: parseTime('23:49:12.667'),
                 pilot: {
                     id: 22, 
                     name: 'pilot name'
