@@ -60,7 +60,7 @@ describe('Test #log-parser.service', () => {
             expect(lapLog.time.second()).to.equal(8);
             expect(lapLog.time.millisecond()).to.equal(277);
 
-            expect(lapLog.pilot.id).to.equal(38);
+            expect(lapLog.pilot.id).to.equal('038');
             expect(lapLog.pilot.name).to.equal('F.MASSA');
             
             expect(lapLog.lapNumber).to.equal(1);
@@ -120,7 +120,7 @@ describe('Test #log-parser.service', () => {
                 proofTime: parseDuration('1:50.55')
             }
             
-            expect(serializeRanking(r)).to.equal('1	22 – pilot name	1	1:50.550');
+            expect(serializeRanking(r)).to.equal('1	022 – pilot name	1	1:50.550');
 
 
         } catch (error) {
